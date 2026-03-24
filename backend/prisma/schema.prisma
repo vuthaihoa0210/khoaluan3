@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String?
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookings  Booking[]
+  vouchers  UserVoucher[]
+  reviews   Review[]
+  chatRooms ChatRoom[]
+}
+
+model Voucher {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique
+  type          String   // PERCENT or AMOUNT
+  value         Float
+  minOrderValue Float    @default(0)
+  maxDiscount   Float?
+  startDate     DateTime
+  endDate       DateTime
+  category      String   @default("ALL") // ALL, HOTEL, FLIGHT, TOUR
+  isActive      Boolean  @default(true)
+  userVouchers  UserVoucher[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model UserVoucher {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  voucherId Int
+  voucher   Voucher  @relation(fields: [voucherId], references: [id])
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Flight {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique // Original flight code (e.g. VN203)
+  name        String
+  description String?
+  location    String?
+  price       Float?
+  image       String?
+  rating      Float?   @default(0)
+  category    String   @default("DOMESTIC") // DOMESTIC or INTERNATIONAL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Tour {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  location    String?
+  price       Float?
+  image       String?
+  rating      Float?   @default(0)
+  category    String   @default("DOMESTIC") // DOMESTIC or INTERNATIONAL
+  itinerary   String?  // Stores JSON string of itinerary
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Hotel {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  location    String?
+  price       Float?
+  image       String?
+  rating      Float?   @default(0)
+  category    String   @default("DOMESTIC") // DOMESTIC or INTERNATIONAL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model Booking {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  type          String   // TOUR, FLIGHT, HOTEL
+  itemId        Int
+  itemName      String
+  startDate     DateTime
+  endDate       DateTime? // Added for return date
+  price         Float
+  // New fields
+  customerName  String?
+  customerPhone String?
+  totalPeople   Int      @default(1)
+  seatClass     String?  // ECONOMY, BUSINESS (For flights) | SINGLE, DOUBLE (For hotels)
+
+  // Voucher fields
+  voucherCode    String?
+  discountAmount Float   @default(0)
+  finalPrice     Float?
+  
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  type      String   // TOUR, FLIGHT, HOTEL
+  itemId    Int
+  rating    Int      @default(5)
+  comment   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OTP {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model ChatRoom {
+  id        Int           @id @default(autoincrement())
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id])
+  status    String        @default("OPEN") // OPEN | CLOSED
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id         Int      @id @default(autoincrement())
+  roomId     Int
+  room       ChatRoom @relation(fields: [roomId], references: [id])
+  senderId   Int
+  senderRole String   // USER | ADMIN
+  content    String
+  createdAt  DateTime @default(now())
+}

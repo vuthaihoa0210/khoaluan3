@@ -1,0 +1,98 @@
+﻿Bß║»t ─æß║ºu seed dß╗» liß╗çu...
+node.exe : PrismaCli
+entInitializationErr
+or: 
+At line:1 char:1
++ & "C:\Program File
+s\nodejs/node.exe" 
+"C:\Program Files\no
+dejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Pris   
+ maClientInitial    
+izationError: :    
+String) [], Rem    
+oteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+Invalid `prisma.chat
+Message.deleteMany()
+` invocation in
+C:\Users\Admin\Docum
+ents\KHOALUAN3\backe
+nd\prisma\seed.ts:12
+:28
+
+   9 
+console.log('Bß║»t 
+─æß║ºu seed dß╗» 
+liß╗çu...');
+  10 
+  11 // 1. X├│a 
+dß╗» liß╗çu c┼⌐ 
+(thß╗⌐ tß╗▒: child 
+tr╞░ß╗¢c parent)
+ΓåÆ 12 await prisma.
+chatMessage.deleteMa
+ny(
+error: Error 
+validating 
+datasource `db`: 
+the URL must start 
+with the protocol 
+`postgresql://` or 
+`postgres://`.
+  -->  
+schema.prisma:7
+   | 
+ 6 |   provider = 
+"postgresql"
+ 7 |   url      = 
+env("DATABASE_URL")
+   | 
+
+Validation Error 
+Count: 1
+    at $n.handleRequ
+estError (C:\Users\A
+dmin\Documents\KHOAL
+UAN3\backend\node_mo
+dules\@prisma\client
+\runtime\library.js:
+121:7615)
+    at $n.handleAndL
+ogRequestError (C:\U
+sers\Admin\Documents
+\KHOALUAN3\backend\n
+ode_modules\@prisma\
+client\runtime\libra
+ry.js:121:6623)
+    at $n.request (C
+:\Users\Admin\Docume
+nts\KHOALUAN3\backen
+d\node_modules\@pris
+ma\client\runtime\li
+brary.js:121:6307)
+    at async l (C:\U
+sers\Admin\Documents
+\KHOALUAN3\backend\n
+ode_modules\@prisma\
+client\runtime\libra
+ry.js:130:9633)
+    at async main (C
+:\Users\Admin\Docume
+nts\KHOALUAN3\backen
+d\prisma\seed.ts:12:
+3) {
+  clientVersion: 
+'5.22.0',
+  errorCode: 
+undefined
+}
