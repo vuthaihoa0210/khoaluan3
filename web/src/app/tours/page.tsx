@@ -141,7 +141,8 @@ export default function ToursPage() {
 
       {loading ? (
         <div style={{ padding: '100px 0', textAlign: 'center' }}>
-          <Spin size="large" tip="Đang tải danh sách Tour, vui lòng đợi..." />
+          <Spin size="large" />
+          <div style={{ marginTop: 16, color: "#666" }}>Đang tải danh sách Tour, vui lòng đợi...</div>
         </div>
       ) : (
       <Row gutter={[16, 16]}>

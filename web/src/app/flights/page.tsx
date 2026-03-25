@@ -154,7 +154,8 @@ export default function FlightsPage() {
 
       {loading ? (
         <div style={{ padding: '100px 0', textAlign: 'center' }}>
-          <Spin size="large" tip="Đang tải dữ liệu, vui lòng chờ máy chủ khởi động..." />
+          <Spin size="large" />
+          <div style={{ marginTop: 16, color: "#666" }}>Đang tải dữ liệu, vui lòng chờ máy chủ khởi động...</div>
         </div>
       ) : (
       <Row gutter={[16, 16]}>
