@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Col, Input, Row, Space, Tag, Typography, Select, Pagination, Button, Tabs, Slider } from 'antd';
+import { Card, Col, Input, Row, Space, Tag, Typography, Select, Pagination, Button, Tabs, Slider, Spin } from 'antd';
 import { SearchOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -139,6 +139,11 @@ export default function HotelsPage() {
 
       <Tabs items={tabItems} activeKey={activeTab} onChange={(key) => { setActiveTab(key); setCurrentPage(1); }} />
 
+      {loading ? (
+        <div style={{ padding: '100px 0', textAlign: 'center' }}>
+          <Spin size="large" tip="Đang tải dữ liệu khách sạn, vui lòng đợi..." />
+        </div>
+      ) : (
       <Row gutter={[16, 16]}>
         {pagedHotels.map((h) => (
           <Col xs={24} sm={12} md={8} lg={6} key={h.id} style={{ display: 'flex' }}>
@@ -175,13 +180,14 @@ export default function HotelsPage() {
           </Col>
         ))}
       </Row>
+      )}
 
       <div style={{ marginTop: 24, textAlign: 'right' }}>
         <Pagination
           current={currentPage}
           pageSize={PAGE_SIZE}
           total={filteredAndSortedHotels.length}
-          onChange={(page) => setCurrentPage(page)}
+          onChange={(page) => { setCurrentPage(page); window.scrollTo({ top: 300, behavior: 'smooth' }); }}
           showSizeChanger={false}
         />
       </div>

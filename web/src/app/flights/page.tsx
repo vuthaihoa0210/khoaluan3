@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Col, Input, Row, Space, Tag, Typography, Select, Pagination, Button, DatePicker, Tabs } from 'antd';
+import { Card, Col, Input, Row, Space, Tag, Typography, Select, Pagination, Button, DatePicker, Tabs, Spin } from 'antd';
 import { SearchOutlined, EnvironmentOutlined, CalendarOutlined } from '@ant-design/icons';
 import { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -152,6 +152,11 @@ export default function FlightsPage() {
 
       <Tabs items={tabItems} activeKey={activeTab} onChange={(key) => { setActiveTab(key); setCurrentPage(1); }} />
 
+      {loading ? (
+        <div style={{ padding: '100px 0', textAlign: 'center' }}>
+          <Spin size="large" tip="Đang tải dữ liệu, vui lòng chờ máy chủ khởi động..." />
+        </div>
+      ) : (
       <Row gutter={[16, 16]}>
         {pagedFlights.map((f) => (
           <Col xs={24} sm={12} md={8} lg={6} key={f.id} style={{ display: 'flex' }}>
@@ -188,13 +193,14 @@ export default function FlightsPage() {
           </Col>
         ))}
       </Row>
+      )}
 
       <div style={{ marginTop: 24, textAlign: 'right' }}>
         <Pagination
           current={currentPage}
           pageSize={PAGE_SIZE}
           total={filteredAndSortedFlights.length}
-          onChange={(page) => setCurrentPage(page)}
+          onChange={(page) => { setCurrentPage(page); window.scrollTo({ top: 300, behavior: 'smooth' }); }}
           showSizeChanger={false}
         />
       </div>
