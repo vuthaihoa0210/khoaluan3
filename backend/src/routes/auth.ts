@@ -1,54 +1,22 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import nodemailer from 'nodemailer';
-import dns from 'node:dns';
-
-// Fix issue "connect ENETUNREACH": Force Node.js to use IPv4 instead of IPv6
-dns.setDefaultResultOrder('ipv4first');
+import { Resend } from 'resend';
 
 const router = Router();
 const prisma = new PrismaClient();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-let transporter: nodemailer.Transporter | null = null;
-
-async function getTransporter() {
-    if (transporter) return transporter;
-    
-    if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
-        transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
-            secure: true,
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS,
-            },
-        });
-    } else {
-        const testAccount = await nodemailer.createTestAccount();
-        transporter = nodemailer.createTransport({
-            host: "smtp.ethereal.email",
-            port: 587,
-            secure: false, 
-            auth: {
-                user: testAccount.user, 
-                pass: testAccount.pass, 
-            },
-        });
-    }
-    return transporter;
-}
-
-// Helper function to send email
+// Helper function to send email via Resend API
 async function sendOTPEmail(email: string, otp: string) {
-    const tp = await getTransporter();
-    const isTestMode = !process.env.GMAIL_USER || !process.env.GMAIL_PASS;
-    const fromAddress = isTestMode ? '"TravelEasy Test" <no-reply@ethereal.email>' : `"TravelEasy" <${process.env.GMAIL_USER}>`;
+    if (!process.env.RESEND_API_KEY) {
+        console.log(`[TEST MODE] Không tìm thấy RESEND_API_KEY. Giả lập gửi OTP: ${otp} tới ${email}`);
+        return;
+    }
 
-    const mailOptions = {
-        from: fromAddress,
-        to: email,
+    const { data, error } = await resend.emails.send({
+        from: 'TravelEasy <onboarding@resend.dev>',
+        to: email, // LƯU Ý: Ở gói free, Resend email chỉ gửi được đến chính email đăng ký tài khoản Resend
         subject: 'Mã xác nhận Đăng ký tài khoản TravelEasy',
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -63,17 +31,10 @@ async function sendOTPEmail(email: string, otp: string) {
                 <p>Trân trọng,<br>Đội ngũ TravelEasy</p>
             </div>
         `,
-    };
+    });
 
-    const info = await tp.sendMail(mailOptions);
-
-    if (isTestMode) {
-        console.log(`\n========================================`);
-        console.log(`[TEST MODE] Đã cấu hình gửi mail ẩn danh (Ethereal)`);
-        console.log(`Mã OTP đăng ký là: ${otp}`);
-        console.log(`Bấm vào link sau để xem email với giao diện thực tế gửi cho người dùng:`);
-        console.log(nodemailer.getTestMessageUrl(info));
-        console.log(`========================================\n`);
+    if (error) {
+        throw new Error(error.message);
     }
 }
 
@@ -112,7 +73,13 @@ router.post('/send-otp', async (req: Request, res: Response) => {
             }
         });
 
-        await sendOTPEmail(email, otpCode);
+        try {
+            await sendOTPEmail(email, otpCode);
+        } catch (mailError) {
+            console.error("MAIL ERROR:", mailError);
+            res.status(500).json({ error: "Không gửi được OTP" });
+            return;
+        }
 
         res.json({ message: 'Mã OTP đã được gửi đến email của bạn' });
     } catch (error) {
