@@ -2,6 +2,10 @@ import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import dns from 'node:dns';
+
+// Fix issue "connect ENETUNREACH": Force Node.js to use IPv4 instead of IPv6
+dns.setDefaultResultOrder('ipv4first');
 
 const router = Router();
 const prisma = new PrismaClient();
