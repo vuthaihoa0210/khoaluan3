@@ -24,6 +24,11 @@ const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 };
 
+const removeAccents = (str: string) => {
+  if (!str) return '';
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+};
+
 export default function ToursPage() {
   const router = useRouter();
   const [tours, setTours] = useState<Destination[]>([]);
