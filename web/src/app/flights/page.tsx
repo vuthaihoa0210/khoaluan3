@@ -70,14 +70,20 @@ export default function FlightsPage() {
 
     if (from.trim()) {
       const fromLower = removeAccents(from);
-      filtered = filtered.filter(f => removeAccents(f.name).includes(fromLower));
+      filtered = filtered.filter(f => {
+        const n = removeAccents(f.name);
+        const diIndex = n.indexOf(' di ');
+        const dashIndex = n.indexOf(' - ');
+        if (diIndex !== -1) return n.substring(0, diIndex).includes(fromLower);
+        if (dashIndex !== -1) return n.substring(0, dashIndex).includes(fromLower);
+        return n.includes(fromLower);
+      });
     }
     
     if (to.trim()) {
       const toLower = removeAccents(to);
       filtered = filtered.filter(f => 
-        (f.location && removeAccents(f.location).includes(toLower)) || 
-        removeAccents(f.name).includes(toLower)
+        (f.location && removeAccents(f.location).includes(toLower))
       );
     }
 
