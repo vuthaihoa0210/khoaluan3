@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-export default function OrderPage() {
+function OrderContent() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -594,5 +594,13 @@ export default function OrderPage() {
                 </Row>
             </Card>
         </div>
+    );
+}
+
+export default function OrderPage() {
+    return (
+        <React.Suspense fallback={<div style={{ textAlign: 'center', padding: 50 }}><Spin size="large" /></div>}>
+            <OrderContent />
+        </React.Suspense>
     );
 }
