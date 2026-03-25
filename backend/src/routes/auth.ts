@@ -5,7 +5,8 @@ import { Resend } from 'resend';
 
 const router = Router();
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Khởi tạo an toàn: nếu trên Render bạn chưa kịp điền RESEND_API_KEY thì nó sẽ dùng 're_dummy' tạm để không bị sập (crash) app.
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy');
 
 // Helper function to send email via Resend API
 async function sendOTPEmail(email: string, otp: string) {
