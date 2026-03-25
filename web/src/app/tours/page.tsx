@@ -67,10 +67,10 @@ export default function ToursPage() {
     }
     
     if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase();
+      const term = removeAccents(searchTerm);
       filtered = filtered.filter(t => 
-        (t.location && t.location.toLowerCase().includes(term)) ||
-        t.name.toLowerCase().includes(term)
+        (t.location && removeAccents(t.location).includes(term)) ||
+        removeAccents(t.name).includes(term)
       );
     }
 

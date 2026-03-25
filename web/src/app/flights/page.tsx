@@ -69,15 +69,15 @@ export default function FlightsPage() {
     }
 
     if (from.trim()) {
-      const fromLower = from.toLowerCase();
-      filtered = filtered.filter(f => f.name.toLowerCase().includes(fromLower));
+      const fromLower = removeAccents(from);
+      filtered = filtered.filter(f => removeAccents(f.name).includes(fromLower));
     }
     
     if (to.trim()) {
-      const toLower = to.toLowerCase();
+      const toLower = removeAccents(to);
       filtered = filtered.filter(f => 
-        (f.location && f.location.toLowerCase().includes(toLower)) || 
-        f.name.toLowerCase().includes(toLower)
+        (f.location && removeAccents(f.location).includes(toLower)) || 
+        removeAccents(f.name).includes(toLower)
       );
     }
 

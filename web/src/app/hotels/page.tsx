@@ -67,10 +67,10 @@ export default function HotelsPage() {
     }
     
     if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase();
+      const term = removeAccents(searchTerm);
       filtered = filtered.filter(h => 
-        (h.location && h.location.toLowerCase().includes(term)) ||
-        h.name.toLowerCase().includes(term)
+        (h.location && removeAccents(h.location).includes(term)) ||
+        removeAccents(h.name).includes(term)
       );
     }
 
