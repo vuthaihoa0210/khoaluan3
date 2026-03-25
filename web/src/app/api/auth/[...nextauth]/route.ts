@@ -25,7 +25,7 @@ export const authOptions = {
           if (!res.ok) return null;
           const user = await res.json();
           if (!user?.id) return null;
-          return { id: String(user.id), email: user.email, name: user.name, role: user.role };
+          return { id: user.id as any, email: user.email, name: user.name, role: user.role };
         } catch {
           return null;
         }
