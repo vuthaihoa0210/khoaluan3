@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dự Án Du Lịch",
+  title: "TravelEasy",
   description: "Ứng dụng du lịch Việt Nam",
 };
 
